@@ -1,8 +1,8 @@
 import { createContext, useContext, useCallback, type ReactNode } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useWebSocketSyncContext } from './WebSocketSyncContext';
 import type { TeamMember } from '../types';
 
-const COLORS = [
+export const MEMBER_COLORS = [
   '#3B82F6', // blue
   '#10B981', // green
   '#F59E0B', // amber
@@ -15,7 +15,7 @@ const COLORS = [
 
 interface TeamContextType {
   members: TeamMember[];
-  addMember: (name: string) => void;
+  addMember: (name: string, color?: string) => void;
   removeMember: (id: string) => void;
   getMember: (id: string) => TeamMember | undefined;
 }
@@ -23,13 +23,13 @@ interface TeamContextType {
 const TeamContext = createContext<TeamContextType | null>(null);
 
 export function TeamProvider({ children }: { children: ReactNode }) {
-  const [members, setMembers] = useLocalStorage<TeamMember[]>('chore-app-team', []);
+  const { team: members, setTeam: setMembers } = useWebSocketSyncContext();
 
-  const addMember = useCallback((name: string) => {
+  const addMember = useCallback((name: string, color?: string) => {
     const newMember: TeamMember = {
       id: crypto.randomUUID(),
       name,
-      color: COLORS[members.length % COLORS.length],
+      color: color ?? MEMBER_COLORS[members.length % MEMBER_COLORS.length],
     };
     setMembers((prev) => [...prev, newMember]);
   }, [members.length, setMembers]);
