@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, type ReactNode } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useWebSocketSyncContext } from './WebSocketSyncContext';
 import type { Chore, CompletedChore, Priority, RecurrenceRule } from '../types';
 import { getNextOccurrence } from '../utils/recurrenceUtils';
 
@@ -24,8 +24,7 @@ interface ChoreContextType {
 const ChoreContext = createContext<ChoreContextType | null>(null);
 
 export function ChoreProvider({ children }: { children: ReactNode }) {
-  const [chores, setChores] = useLocalStorage<Chore[]>('chore-app-chores', []);
-  const [completedChores, setCompletedChores] = useLocalStorage<CompletedChore[]>('chore-app-completed', []);
+  const { chores, setChores, completedChores, setCompletedChores } = useWebSocketSyncContext();
 
   const addChore = useCallback((input: ChoreInput) => {
     const newChore: Chore = {

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { addWeeks, addMonths } from 'date-fns';
+import { WebSocketSyncProvider } from './context/WebSocketSyncContext';
 import { TeamProvider } from './context/TeamContext';
 import { ChoreProvider, useChores } from './context/ChoreContext';
 import { Header } from './components/Layout/Header';
@@ -120,11 +121,13 @@ function AppContent() {
 
 function App() {
   return (
-    <TeamProvider>
-      <ChoreProvider>
-        <AppContent />
-      </ChoreProvider>
-    </TeamProvider>
+    <WebSocketSyncProvider>
+      <TeamProvider>
+        <ChoreProvider>
+          <AppContent />
+        </ChoreProvider>
+      </TeamProvider>
+    </WebSocketSyncProvider>
   );
 }
 
